@@ -34,6 +34,7 @@ try
     });
 
     builder.Services.AddSingleton<TokenUsageTracker>();
+    builder.Services.AddSingleton<IIngestionService, IngestionService>();
     builder.Services.AddSingleton<IChunkingService, MarkdownChunkingService>();
     builder.Services.AddSingleton<IEmbeddingService, OpenAiEmbeddingService>();
     builder.Services.AddSingleton<IVectorStoreService, FileVectorStoreService>();

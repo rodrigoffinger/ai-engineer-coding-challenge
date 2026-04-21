@@ -86,6 +86,11 @@ public sealed class ToolRegistryService(
 
     private string ExecuteGetStoreHours()
     {
+        // Data is hardcoded intentionally: in production this would come from a database or
+        // config service, not from the SOP document. The point of this tool is to demonstrate
+        // a different tool pattern from search_sop — returning structured data from a typed
+        // source rather than unstructured text via vector retrieval. Hardcoding stands in for
+        // that external datasource; swap the body here when a real source is available.
         logger.LogInformation("get_store_hours — returning hardcoded schedule from SOP §2.1");
 
         var hours = new[]

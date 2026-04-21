@@ -9,7 +9,7 @@ POST {{Api_HostAddress}}/api/ingest
 Content-Type: application/json
 
 {
-	"sourcePath": "../../../../knowledge-base/Grocery_Store_SOP.md",
+	"sourcePath": "../../../knowledge-base/Grocery_Store_SOP.md",
 	"forceReingest": false
 }
 

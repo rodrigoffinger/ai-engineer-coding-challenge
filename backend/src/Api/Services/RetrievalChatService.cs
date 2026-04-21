@@ -73,6 +73,11 @@ public sealed class RetrievalChatService(
 
         var invokedTools = new List<string>();
 
+        // ── Agent orchestration ───────────────────────────────────────────────
+        // Single-round tool-use: detect tool calls → execute → re-invoke model.
+        // To extend to a multi-step loop, we could replace this block with a while loop
+        // conditioned on FinishReason == ToolCalls. To add new tools, register
+        // them in IToolRegistryService / ToolRegistryService.
         if (completion.Value.FinishReason == ChatFinishReason.ToolCalls)
         {
             logger.LogInformation("Model requested {ToolCallCount} tool call(s)", completion.Value.ToolCalls.Count);
@@ -106,6 +111,7 @@ public sealed class RetrievalChatService(
             completion = await chatClient.CompleteChatAsync(messages, options, cancellationToken);
             tokenTracker.TrackChat(completion.Value.Usage.InputTokenCount, completion.Value.Usage.OutputTokenCount);
         }
+        // ─────────────────────────────────────────────────────────────────────
 
         var responseText = completion.Value.Content[0].Text;
         logger.LogInformation("Response ready — {Chars} chars, tools used: [{Tools}]",

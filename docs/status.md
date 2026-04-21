@@ -1,6 +1,6 @@
 # Implementation Status
 
-Last updated: 2026-04-21
+Last updated: 2026-04-21 — all 8 phases complete
 
 ---
 
@@ -16,7 +16,7 @@ Last updated: 2026-04-21
 | 5 — Tool Registry | ✅ Complete |
 | 6 — Chat Service (RAG + Tools) | ✅ Complete |
 | 7 — Frontend Polish | ✅ Complete |
-| 8 — Integration Testing & Cleanup | ⏳ Pending |
+| 8 — Integration Testing & Cleanup | ✅ Complete |
 
 ---
 
@@ -80,9 +80,9 @@ Last updated: 2026-04-21
 
 | Task | Status | Notes |
 |---|---|---|
-| T8.1 — End-to-end smoke test | ⏳ | Pending — API key configured, awaiting test run |
-| T8.2 — Remove placeholder flags | ⏳ | Pending — dependent on T8.1 confirming no regressions |
-| T8.3 — README / run instructions | ⏳ | Pending |
+| T8.1 — End-to-end smoke test | ✅ | Validated via logs: ingest (76 chunks), chat with tool call (get_store_hours), chat with pure RAG, multi-turn context preserved |
+| T8.2 — Remove placeholder flags | ✅ | All responses return `IsPlaceholder = false`; contracts kept for frontend compatibility |
+| T8.3 — README / run instructions | ✅ | Created `docs/running.md` with setup, launch, and observability instructions |
 
 ---
 
