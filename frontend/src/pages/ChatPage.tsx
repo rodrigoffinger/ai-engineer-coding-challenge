@@ -7,14 +7,15 @@ import { CitationsPanel } from '../components/CitationsPanel'
 import { IngestPanel } from '../components/IngestPanel'
 import { StatusBanner } from '../components/StatusBanner'
 
-const defaultSourcePath = '../../../../knowledge-base/Grocery_Store_SOP.md'
+const defaultSourcePath = '../../../knowledge-base/Grocery_Store_SOP.md'
 
-function createMessage(role: ChatMessage['role'], content: string): ChatMessage {
+function createMessage(role: ChatMessage['role'], content: string, toolCalls?: string[]): ChatMessage {
   return {
     id: window.crypto.randomUUID(),
     role,
     content,
     timestamp: new Date().toISOString(),
+    toolCalls,
   }
 }
 
@@ -32,7 +33,7 @@ export function ChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     createMessage(
       'assistant',
-      'This is a baseline scaffold. Chat, retrieval, citations, and vector-store persistence are intentionally left unimplemented for the challenge.',
+      'Hello! I\'m the Grocery Store SOP Assistant. Ask me anything about store procedures, food safety, employee policies, store hours, and more. Click "Ingest SOP" in the sidebar first if this is your first time running the app.',
     ),
   ])
 
@@ -119,7 +120,7 @@ export function ChatPage() {
 
       setMessages((currentMessages) => [
         ...currentMessages,
-        createMessage('assistant', response.assistantMessage),
+        createMessage('assistant', response.assistantMessage, response.toolCalls.length > 0 ? response.toolCalls : undefined),
       ])
       setCitations(response.citations)
       setStatus({

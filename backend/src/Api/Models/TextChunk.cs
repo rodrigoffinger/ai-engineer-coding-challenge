@@ -8,5 +8,7 @@ public sealed class TextChunk
 
     public int Index { get; init; }
 
+    public string SectionTitle { get; init; } = string.Empty;
+
     public string Content { get; init; } = string.Empty;
 }

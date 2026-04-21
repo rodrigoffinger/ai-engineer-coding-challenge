@@ -1,8 +1,10 @@
-using Api.Models;
+using OpenAI.Chat;
 
 namespace Api.Services;
 
 public interface IToolRegistryService
 {
-    IReadOnlyList<ToolDefinition> GetAvailableTools();
+    IReadOnlyList<ChatTool> GetTools();
+
+    Task<string> ExecuteAsync(string toolName, string argumentsJson, CancellationToken cancellationToken = default);
 }

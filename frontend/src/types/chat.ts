@@ -7,6 +7,7 @@ export interface ChatMessage {
   role: ChatRole
   content: string
   timestamp: string
+  toolCalls?: string[]
 }
 
 export interface Citation {

@@ -19,7 +19,7 @@ export function IngestPanel({ sourcePath, onSourcePathChange, onIngest, isBusy }
         disabled={isBusy}
       />
       <div className="ingest-actions">
-        <span className="hint">Default local path: ../../../../knowledge-base/Grocery_Store_SOP.md</span>
+        <span className="hint">Default local path: ../../../knowledge-base/Grocery_Store_SOP.md</span>
         <button className="secondary-button" type="button" onClick={onIngest} disabled={isBusy || sourcePath.trim().length === 0}>
           {isBusy ? 'Ingesting...' : 'Run Ingest'}
         </button>

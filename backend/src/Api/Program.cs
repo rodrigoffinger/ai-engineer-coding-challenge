@@ -1,32 +1,61 @@
+using System.Net.Sockets;
 using Api.Services;
+using Serilog;
+using Serilog.Sinks.Udp.TextFormatters;
 
-var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .MinimumLevel.Override("Microsoft.AspNetCore", Serilog.Events.LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext:l} — {Message:lj}{NewLine}{Exception}")
+    .WriteTo.Udp("127.0.0.1", 9998, AddressFamily.InterNetwork, new Log4jTextFormatter())
+    .CreateLogger();
 
-var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
-	?? ["http://localhost:5173"];
-
-builder.Services.AddControllers();
-builder.Services.AddCors(options =>
+try
 {
-	options.AddPolicy("LocalFrontend", policy =>
-	{
-		policy.WithOrigins(allowedOrigins)
-			.AllowAnyHeader()
-			.AllowAnyMethod();
-	});
-});
+    Log.Information("Starting Grocery Store SOP Assistant API");
 
-builder.Services.AddSingleton<IChunkingService, PlaceholderChunkingService>();
-builder.Services.AddSingleton<IEmbeddingService, PlaceholderEmbeddingService>();
-builder.Services.AddSingleton<IVectorStoreService, FileVectorStoreService>();
-builder.Services.AddSingleton<IToolRegistryService, PlaceholderToolRegistryService>();
-builder.Services.AddSingleton<IRetrievalChatService, PlaceholderRetrievalChatService>();
+    var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+    builder.Host.UseSerilog();
 
-app.UseHttpsRedirection();
-app.UseCors("LocalFrontend");
-app.UseAuthorization();
-app.MapControllers();
+    var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+        ?? ["http://localhost:5173"];
 
-app.Run();
+    builder.Services.AddControllers();
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("LocalFrontend", policy =>
+        {
+            policy.WithOrigins(allowedOrigins)
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+    });
+
+    builder.Services.AddSingleton<TokenUsageTracker>();
+    builder.Services.AddSingleton<IChunkingService, MarkdownChunkingService>();
+    builder.Services.AddSingleton<IEmbeddingService, OpenAiEmbeddingService>();
+    builder.Services.AddSingleton<IVectorStoreService, FileVectorStoreService>();
+    builder.Services.AddSingleton<IToolRegistryService, ToolRegistryService>();
+    builder.Services.AddSingleton<IRetrievalChatService, RetrievalChatService>();
+
+    var app = builder.Build();
+
+    app.UseHttpsRedirection();
+    app.UseCors("LocalFrontend");
+    app.UseAuthorization();
+    app.MapControllers();
+
+    app.Run();
+
+    app.Services.GetRequiredService<TokenUsageTracker>().LogSessionSummary();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "API terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

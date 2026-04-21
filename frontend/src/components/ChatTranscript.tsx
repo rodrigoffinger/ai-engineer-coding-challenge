@@ -28,6 +28,15 @@ export function ChatTranscript({ messages }: ChatTranscriptProps) {
             <span>{formatTimestamp(message.timestamp)}</span>
           </div>
           <p className="message-body">{message.content}</p>
+          {message.toolCalls && message.toolCalls.length > 0 && (
+            <div className="tool-calls">
+              {message.toolCalls.map((tool) => (
+                <span key={tool} className="tool-badge">
+                  🔧 {tool}
+                </span>
+              ))}
+            </div>
+          )}
         </article>
       ))}
       <div ref={endOfMessagesRef} />

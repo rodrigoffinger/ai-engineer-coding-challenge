@@ -9,7 +9,7 @@ export function CitationsPanel({ citations }: CitationsPanelProps) {
     <section className="sidebar-card" aria-labelledby="citations-heading">
       <h2 id="citations-heading">Citations</h2>
       {citations.length === 0 ? (
-        <p className="empty-state">No citations yet. This panel stays empty until grounded retrieval is implemented.</p>
+        <p className="empty-state">No citations yet. Send a message to see which SOP sections were used to answer.</p>
       ) : (
         <ul className="citations-list">
           {citations.map((citation, index) => (

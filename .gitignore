@@ -66,3 +66,4 @@ Thumbs.db
 .env
 .env.local
 .env.*.local
+/backend/src/Api/appsettings.Development.json
